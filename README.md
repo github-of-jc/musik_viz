@@ -1,4 +1,4 @@
 # musik_viz
 
 
-http://digit-classifier.surge.sh/
+http://musik-viz.surge.sh/
