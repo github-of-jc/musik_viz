@@ -1,0 +1,44 @@
+</head>
+
+<body>
+  <div><button id="play" disabled>Yodel!</button></div>
+</body>
+
+
+<script type="text/javascript">
+  window.onload = (function () {
+    'use strict';
+
+    const URL = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/Yodel_Sound_Effect.mp3';
+
+    const context = new AudioContext();
+    const playButton = document.getElementById('play');
+
+    let yodelBuffer;
+
+    window.fetch(URL).
+      then(response => response.arrayBuffer()).
+      then(arrayBuffer => context.decodeAudioData(arrayBuffer)).
+      then(audioBuffer => {
+        playButton.disabled = false;
+        yodelBuffer = audioBuffer;
+      });
+
+    playButton.onclick = () => play(yodelBuffer);
+
+    function play(audioBuffer) {
+      const source = context.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(context.destination);
+      source.start();
+    }
+  })();
+  //# sourceURL=pen.js
+
+
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,213 @@
+
+<!-- saved from url=(0948)https://00e9e64bac61f8bd8ccbf5180958d2ff6fb549334b8b3f3dcf-apidata.googleusercontent.com/download/storage/v1/b/echooo-xml/o/index7.html?qk=AD5uMEvjU5s3IbvjlRcgKeVr7CxaYOmEbfHtq6JPMpP8im4s3L6Biigz7E6C0oltWq5PJHfXiYPsQMXW1SVaXOl38XbsMMmLF-2yiUNwEwkjmyOnOrz3U3BAV9ixR3nk3o5JTPNHCzKrvW-YtNgXQOf989_0eA-ftQNCzUykGBspPOl4FycbhfiIP2VvpxeWxmdrrFU58Do27gK6PCbOS1_qdHX_daL28aBalSsCzr17x-Y0XVrP5Im509Q6HFM51jKqVbM-iX3vpuwUBkFAHF8qOkNvgfXQJxzET-jL-IKMaFYEZpSVZGudnTuBZmTYjqCaQ1leoXOLoajy0TBxU72rDyuaopse6MzKW_cpyTdT63XVErqMC5Cz5GLQrSxcT-zXrBozSRFhHIOjPmY0_nvrzEe-cQfkGZYBWbS633H3YhEeWPVeH10DswXJh1k9GNbMtVdS6TD6qOyF_1EOOAiXAbPbmmHkm7Cgt-Sp03EJ10FxhP9v1PEX3RaHUU6KOl6Z82utI5pphW-v2OZUF7eWlDZXJJB0vWP78vH676bQuZPDRERVLRMIsvFWXdpQRcvLfe5PBv48mRUTVPb8rE1wTNFNbkGYaGFF_sZ7ENy2ov_rhmu6ZuZF6dtZDCnAtTE0Cu7PW0IZqfEqMBMPyvzN-z7z1wVHxl3qXWt_lcvj4gEwVT7oFJEMgHekgKV-R6g7x0KkzsaEDiMfrUWieHK25SrBnr87XTwBQxJPw4l-NPoritXKWI08o4ETd1KXq1ansVqFJ9pU4DB6Zp9aUlSqiUZkaULieg&isca=1 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style>
+    body {
+        background: #282831;
+    }
+
+    /* canvas {
+        width: 8000px;
+        height: 8000px;
+        margin: 2rem auto;
+    } */
+</style></head>
+
+
+
+<body class="vsc-initialized">
+    <div><button id="play" disabled="">Yodel!</button>
+        <p>Volume</p>
+        <input id="volume" type="range" min="0" max="1" step="0.1" value="0.5">
+        <button onclick="myFunction();">recording</button>
+        <div id="result"></div>
+
+        <canvas id="canvas" width="1000" height="1000"></canvas>
+    </div>
+
+
+
+<script type="text/javascript">
+
+    function myFunction() {
+        var audioContext = new AudioContext();
+
+        var rotate = 0;
+
+        var canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+
+        console.log('audio is starting up ...');
+
+        var BUFF_SIZE = 1024;
+
+        var audioInput = null,
+            microphone_stream = null,
+            gain_node = null,
+            script_processor_node = null,
+            script_processor_fft_node = null,
+            analyserNode = null;
+
+        const url = 'https://www.mfiles.co.uk/mp3-downloads/rachmaninoff-prelude-in-c-sharp-minor.mp3';
+        // start playing to fill stream with music
+        const audio = new Audio(url);
+        audio.crossOrigin = "anonymous"; // to get around CORS restriction
+        const audioctx = new (window.AudioContext || window.webkitAudioContext)();
+        const stream_dest = audioctx.createMediaStreamDestination();
+        const source = audioctx.createMediaElementSource(audio);
+        source.connect(stream_dest);
+
+        const stream = stream_dest.stream;
+        // console.log("stream")
+        // console.log(stream)
+        audio.play();
+
+        do_stuff_with_stream(stream);
+
+        // ---
+
+        function show_some_data(
+            given_typed_array,
+            num_row_to_display,
+            label
+        ) {
+            // given_typed_array is the array with numbers
+            // console.log('given_typed_array');
+            // console.log(given_typed_array);
+            var size_buffer = given_typed_array.length;
+            // console.log(size_buffer);
+            var index = 0;
+            var max_index = num_row_to_display;
+            // console.log(max_index);
+
+            // console.log('__________ ' + label);
+            const star = '*';
+            // result = document.getElementById('result');
+            // result.innerHTML = null;
+
+            function updateAnimation() {
+                rotate +=
+                    Math.PI / 200;
+            }
+
+            function draw() {
+                drawVisual = requestAnimationFrame(draw);
+                analyser = analyserNode;
+                analyser.getByteTimeDomainData(given_typed_array);
+
+                updateAnimation();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                var width = 100,
+                    height = 100;
+
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+
+                // ROTATE THE WHEEL
+                // ctx.rotate(rotate);
+                // console.log(rotate);
+                // ctx.beginPath();
+                // ctx.arc(0, 0, 75, 0, 2 * Math.PI, false);
+                // ctx.fill();
+                ///////////////////
+
+                var rotate2 = 0;
+                numBeam = size_buffer / 10
+                for (var i = 0; i < numBeam; i++) {
+                    ran = given_typed_array[i]
+                    // console.log(ran);
+                    ctx.save();
+                    if (i % 2 == 0) { ctx.fillStyle = "yellow"; }
+                    else { ctx.fillStyle = "white"; }
+                    ctx.rotate(rotate2);
+                    ctx.translate(ran, 0); //x is radius of center
+                    ctx.fillRect(0, 0, 2, ran);
+                    ctx.restore();
+                    rotate2 += (2 * Math.PI) / numBeam;
+                }
+                ctx.restore();
+
+            }
+
+            draw();
+        }
+
+        function process_microphone_buffer(event) {
+            // invoked by event loop
+            var i, N, inp, microphone_output_buffer;
+
+            microphone_output_buffer = event.inputBuffer.getChannelData(0); // just mono - 1 channel for now
+
+        }
+        // takes in the audio stream
+        function do_stuff_with_stream(stream) {
+            gain_node = audioContext.createGain(); //node to control volume
+            gain_node.connect(audioContext.destination);
+
+            microphone_stream = audioContext.createMediaStreamSource(stream); // the playback stream
+            microphone_stream.connect(gain_node);
+
+            script_processor_node = audioContext.createScriptProcessor(
+                BUFF_SIZE,
+                1,
+                1
+            );
+            // process_microphone_buffer is triggered by the audio event
+            // the event is passed to process_microphone_buffer
+            script_processor_node.onaudioprocess = process_microphone_buffer;
+
+            microphone_stream.connect(script_processor_node);
+
+            // --- enable volume control for output speakers
+
+            document
+                .getElementById('volume')
+                .addEventListener('change', function () {
+                    var curr_volume = this.value;
+                    gain_node.gain.value = curr_volume;
+
+                    // console.log('curr_volume ', curr_volume);
+                });
+
+            // --- setup FFT
+
+            script_processor_fft_node = audioContext.createScriptProcessor(
+                BUFF_SIZE,
+                1,
+                1
+            );
+            script_processor_fft_node.connect(gain_node);
+
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.smoothingTimeConstant = 0;
+            analyserNode.fftSize = BUFF_SIZE;
+
+            microphone_stream.connect(analyserNode);
+
+            analyserNode.connect(script_processor_fft_node);
+
+            script_processor_fft_node.onaudioprocess = function () {
+                // get the average for the first channel
+                var array = new Uint8Array(analyserNode.frequencyBinCount);
+                analyserNode.getByteFrequencyData(array);
+
+                // draw the spectrogram
+                if (
+                    microphone_stream.playbackState ==
+                    microphone_stream.PLAYING_STATE
+                ) {
+                    // console.log("show 1")
+                    show_some_data(array, 1, 'from fft');
+                } else {
+                    console.log('no spectogram');
+                }
+            };
+        }
+    } // webaudio_tooling_obj = function()
+
+
+
+
+</script>
+
+</body></html>
